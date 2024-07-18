@@ -9,7 +9,7 @@ HOSTNAME="localhost"
 CONTAINER_NAME="my-apache-php-app"
 
 # Run Docker container
-docker run -d -p ${PORT}:${PORT} --name ${CONTAINER_NAME} -v c:/path/to/jenkins-php-selenium-test/src:/var/www/html php:7.2-apache
+docker run -d -p ${PORT}:${PORT} --name ${CONTAINER_NAME} -v C:\\Users\\lucas\\Desktop\\SSD\\Jenkinsv2\\jenkins-php-selenium-test\\src:/var/www/html php:7.2-apache
 
 # Disable command echo
 set +x
