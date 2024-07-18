@@ -19,6 +19,8 @@ docker run -d -p ${PORT}:${PORT} --name $CONTAINER_NAME -v $SOURCE_DIR:/var/www/
 sleep 1
 docker ps -a
 docker inspect my-apache-php-app
+docker exec my-apache-php-app ps aux | grep apache
+
 
 # Check if the container is running
 if ! docker ps | grep $CONTAINER_NAME; then
