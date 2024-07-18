@@ -7,22 +7,22 @@ set -x
 PORT=80
 HOSTNAME=localhost
 CONTAINER_NAME=my-apache-php-app
-SOURCE_DIR=/c/Users/lucas/Desktop/SSD/Jenkinsv2/jenkins-php-selenium-test/src
+SOURCE_DIR="/c/Users/lucas/Desktop/SSD/Jenkinsv2/jenkins-php-selenium-test/src"
 
-# Check if the container already exists and remove it
+# Check if the container already exists and remove it if it does
 if docker ps -a | grep -q $CONTAINER_NAME; then
     docker rm -f $CONTAINER_NAME
 fi
 
 # Verify the contents of the source directory on the host
 echo "Contents of the source directory on the host:"
-ls -la $SOURCE_DIR
+ls -la "$SOURCE_DIR"
 
 # Run Docker container
-docker run -d -p ${PORT}:${PORT} --name $CONTAINER_NAME -v $SOURCE_DIR:/var/www/html php:7.2-apache 2>&1
+docker run -d -p ${PORT}:${PORT} --name $CONTAINER_NAME -v "$SOURCE_DIR":/var/www/html php:7.2-apache 2>&1
 
 # Sleep to allow the container to start properly
-sleep 1
+sleep 5
 
 # Check if the container is running, if not, exit with an error
 if ! docker ps | grep -q $CONTAINER_NAME; then
@@ -41,6 +41,10 @@ docker exec $CONTAINER_NAME ps aux | grep apache
 # Check the contents of the web root directory inside the container
 echo "Contents of the web root directory:"
 docker exec $CONTAINER_NAME ls -la /var/www/html
+
+# Check the permissions of the mounted directory
+echo "Permissions of the web root directory:"
+docker exec $CONTAINER_NAME ls -la /var/www
 
 # Perform a curl request to check if the PHP application is accessible
 HTTP_STATUS=$(curl -s -o /dev/null -w '%{http_code}' http://$HOSTNAME)
