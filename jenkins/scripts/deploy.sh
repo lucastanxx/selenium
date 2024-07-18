@@ -14,6 +14,10 @@ if docker ps -a | grep -q $CONTAINER_NAME; then
     docker rm -f $CONTAINER_NAME
 fi
 
+# Verify the contents of the source directory on the host
+echo "Contents of the source directory on the host:"
+ls -la $SOURCE_DIR
+
 # Run Docker container
 docker run -d -p ${PORT}:${PORT} --name $CONTAINER_NAME -v $SOURCE_DIR:/var/www/html php:7.2-apache 2>&1
 
@@ -34,7 +38,7 @@ docker logs $CONTAINER_NAME
 echo "Checking if Apache is running:"
 docker exec $CONTAINER_NAME ps aux | grep apache
 
-# Check the contents of the web root directory
+# Check the contents of the web root directory inside the container
 echo "Contents of the web root directory:"
 docker exec $CONTAINER_NAME ls -la /var/www/html
 
