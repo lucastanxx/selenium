@@ -7,6 +7,7 @@ pipeline {
 					agent any
 					steps {
 						sh './jenkins/scripts/deploy.sh'
+						sh 'docker logs my-apache-php-app'
 						input message: 'Finished using the web site? (Click "Proceed" to continue)'
 						sh './jenkins/scripts/kill.sh'
 					}
