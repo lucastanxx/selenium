@@ -4,7 +4,7 @@
 set -x
 
 # Run Docker container
-docker run -d -p 80:80 --name my-apache-php-app -v C:\\Users\\lucas\\Desktop\\SSD\\Jenkinsv2\\jenkins-php-selenium-test\\src:/var/www/html php:7.2-apache
+docker run -d -p 80:80 --name my-apache-php-app -v /c/Users/lucas/Desktop/SSD/Jenkinsv2/jenkins-php-selenium-test/src:/var/www/html php:7.2-apache
 
 # Pause to allow some time for the container to start
 sleep 1
