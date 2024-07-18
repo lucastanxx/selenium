@@ -8,6 +8,10 @@ PORT=80
 HOSTNAME=localhost
 CONTAINER_NAME=my-apache-php-app
 SOURCE_DIR=/var/jenkins_home/workspace/selenium/src
+NETWORK_NAME=jenkins
+
+# Check if the network exists and create it if not
+docker network inspect $NETWORK_NAME >/dev/null 2>&1 || docker network create $NETWORK_NAME
 
 # Check if the container already exists and remove it if it does
 docker ps -a | grep $CONTAINER_NAME && docker rm -f $CONTAINER_NAME
@@ -17,7 +21,7 @@ echo "Contents of the source directory on the host:"
 ls -la $SOURCE_DIR
 
 # Run Docker container
-docker run -d -p ${PORT}:${PORT} --name $CONTAINER_NAME --network jenkins -v $SOURCE_DIR:/var/www/html php:7.2-apache
+docker run -d -p ${PORT}:${PORT} --name $CONTAINER_NAME --network $NETWORK_NAME -v $SOURCE_DIR:/var/www/html php:7.2-apache
 
 # Sleep for 5 seconds to allow the container to start
 sleep 5
@@ -44,10 +48,15 @@ docker exec $CONTAINER_NAME ls -la /var/www/html
 echo "Permissions of the web root directory:"
 docker exec $CONTAINER_NAME ls -la /var/www
 
+# Get the container IP address
+CONTAINER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $CONTAINER_NAME)
+echo "Container IP address: $CONTAINER_IP"
+
 # Perform a curl request to check if the PHP application is live
-HTTP_STATUS=$(curl -s -o /dev/null -w '%{http_code}' http://$HOSTNAME)
+HTTP_STATUS=$(curl -s -o /dev/null -w '%{http_code}' http://$CONTAINER_IP)
+echo "HTTP Status: $HTTP_STATUS"
 if [ "$HTTP_STATUS" -eq 200 ]; then
-    echo "Visit http://$HOSTNAME to see your PHP application in action."
+    echo "Visit http://$CONTAINER_IP to see your PHP application in action."
 else
     echo "Failed to reach application, HTTP status: $HTTP_STATUS"
     exit 2
