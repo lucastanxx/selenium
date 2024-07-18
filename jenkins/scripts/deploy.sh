@@ -1,20 +1,19 @@
 #!/usr/bin/env sh
 
-# Enable script debugging
+# Enable debug mode
 set -x
 
-# Run Docker container
-docker run -d -p 80:80 --name my-apache-php-app -v /c/Users/lucas/Desktop/SSD/Jenkinsv2/jenkins-php-selenium-test/src:/var/www/html php:7.2-apache
+# Check if the container already exists and remove it if it does
+docker ps -a | grep my-apache-php-app && docker rm -f my-apache-php-app
 
-# Pause to allow some time for the container to start
+# Run Docker container
+docker run -d -p 80:80 --name my-apache-php-app -v /c/Users/lucas/Desktop/SSD/Jenkinsv2/jenkins-php-selenium-test/src:/var/www/html php:7.2-apache 2>&1
+
+# Sleep for 1 second to allow things to settle
 sleep 1
 
-# Perform a curl request to check if the server returns HTTP 200
-curl -s -o /dev/null -w "%{http_code}" http://localhost | grep 200 && echo "Application is up and running" || echo "Failed to reach application"
-
-# Disable script debugging
+# Disable debug mode
 set +x
 
-# Informative message about the application
 echo 'Now...'
 echo 'Visit http://localhost to see your PHP application in action.'
