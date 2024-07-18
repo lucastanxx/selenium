@@ -33,5 +33,7 @@ else
     exit 2
 fi
 
+docker logs my-apache-php-app
+
 # Disable debug mode
 set +x
