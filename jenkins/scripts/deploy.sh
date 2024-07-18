@@ -7,8 +7,7 @@ set -x
 PORT=80
 HOSTNAME=localhost
 CONTAINER_NAME=my-apache-php-app
-# Corrected the path
-SOURCE_DIR="/c/Users/lucas/Desktop/SSD/Jenkinsv2/jenkins-php-selenium-test/selenium/src"
+SOURCE_DIR="/var/jenkins_home/workspace/selenium/src"
 
 # Check if the container already exists and remove it if it does
 if docker ps -a | grep -q $CONTAINER_NAME; then
