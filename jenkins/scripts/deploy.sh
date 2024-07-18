@@ -12,6 +12,9 @@ docker run -d -p 80:80 --name my-apache-php-app -v /c/Users/lucas/Desktop/SSD/Je
 # Sleep for 1 second to allow things to settle
 sleep 1
 
+# Perform a curl request to check if the server returns HTTP 200
+curl -s -o /dev/null -w "%{http_code}" http://localhost | grep 200 && echo "Application is up and running" || echo "Failed to reach application"
+
 # Disable debug mode
 set +x
 
