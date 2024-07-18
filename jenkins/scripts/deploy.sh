@@ -46,14 +46,24 @@ docker exec $CONTAINER_NAME ls -la /var/www/html
 echo "Permissions of the web root directory:"
 docker exec $CONTAINER_NAME ls -la /var/www
 
-# Perform a curl request to check if the PHP application is accessible
-HTTP_STATUS=$(curl -s -o /dev/null -w '%{http_code}' http://$HOSTNAME)
-echo "HTTP Status: $HTTP_STATUS"
+# Get the container's IP address
+CONTAINER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $CONTAINER_NAME)
+echo "Container IP address: $CONTAINER_IP"
 
-if [ "$HTTP_STATUS" -eq 200 ]; then
+# Perform a curl request to check if the PHP application is accessible
+echo "Performing curl request to container IP address:"
+HTTP_STATUS=$(curl -s -o /dev/null -w '%{http_code}' http://$CONTAINER_IP)
+echo "HTTP Status from container IP: $HTTP_STATUS"
+
+echo "Performing curl request to localhost:"
+HTTP_STATUS_LOCAL=$(curl -s -o /dev/null -w '%{http_code}' http://$HOSTNAME)
+echo "HTTP Status from localhost: $HTTP_STATUS_LOCAL"
+
+if [ "$HTTP_STATUS_LOCAL" -eq 200 ]; then
     echo "Visit http://$HOSTNAME to see your PHP application in action."
 else
-    echo "Failed to reach application, HTTP status: $HTTP_STATUS"
+    echo "Failed to reach application via localhost, HTTP status: $HTTP_STATUS_LOCAL"
+    echo "Failed to reach application via container IP, HTTP status: $HTTP_STATUS"
     echo "Checking Apache error logs:"
     docker exec $CONTAINER_NAME cat /var/log/apache2/error.log
     exit 2
