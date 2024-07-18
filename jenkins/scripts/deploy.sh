@@ -30,6 +30,14 @@ fi
 echo "Docker container logs:"
 docker logs $CONTAINER_NAME
 
+# Check if Apache is running inside the container
+echo "Checking if Apache is running:"
+docker exec $CONTAINER_NAME ps aux | grep apache
+
+# Check the contents of the web root directory
+echo "Contents of the web root directory:"
+docker exec $CONTAINER_NAME ls -la /var/www/html
+
 # Perform a curl request to check if the PHP application is accessible
 HTTP_STATUS=$(curl -s -o /dev/null -w '%{http_code}' http://$HOSTNAME)
 echo "HTTP Status: $HTTP_STATUS"
